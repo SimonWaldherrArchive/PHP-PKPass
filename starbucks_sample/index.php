@@ -14,9 +14,9 @@ if(isset($_POST['name'])){
 	// Create pass
 	$pass = new PKPass(); 
 
-	$pass->setCertificate('../../Certificate.p12'); // Set the path to your Pass Certificate (.p12 file)
-	$pass->setCertificatePassword('test123'); // Set password for certificate
-	$pass->setWWDRcertPath('../AppleWWDR.pem');
+	$pass->setCertificate('../certs/Certificate.p12'); // Set the path to your Pass Certificate (.p12 file)
+	$pass->setCertificatePassword('test123');          // Set password for certificate
+	$pass->setWWDRcertPath('../certs/AppleWWDRCA.pem');// Set the path to the Apple Worldwide Developer Relations Certification Authority .pem file
 	$pass->setJSON('{ 
 	"passTypeIdentifier": "pass.com.apple.test",
 	"formatVersion": 1,

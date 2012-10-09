@@ -24,10 +24,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['passenger'])){
 	// Create pass
 	
 	//Set certifivate and path in the constructor
-	$pass = new PKPass('../../Certificate.p12', 'test123'); 
+	$pass = new PKPass('../certs/Certificate.p12', 'test123'); // Set the path and password to your Pass Certificate (.p12 file)
 	
 	// Add the WWDR certificate 
-	$pass->setWWDRcertPath('../AppleWWDR.pem');
+	$pass->setWWDRcertPath('../certs/AppleWWDRCA.pem');        // Set the path to the Apple Worldwide Developer Relations Certification Authority .pem file
 
 	//Check if an error occured within the constructor
 	if($pass->checkError($error) == true) {

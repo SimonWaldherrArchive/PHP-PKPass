@@ -53,6 +53,10 @@ class PKPass {
 	 */
 	protected $tempPath = '/tmp/'; // Must end with slash!
 	
+	/*
+	 * Turns debug mode on or off
+	 */
+	protected $debugMode;
 	
 	#################################
 	########PRIVATE VARIABLES########
@@ -142,6 +146,13 @@ class PKPass {
 		}
 	}
 	
+	public function setDebug($mode) {
+  	if($mode)
+  	{
+    	$this->debugMode = true;
+  	}
+	}
+	
 	/*
 	 * Decodes JSON and saves it to a variable
 	 * Parameter: json-string
@@ -192,13 +203,15 @@ class PKPass {
 			$this->clean();
 			return false;	
 		}
-		
+		if($this->debugMode) {
+  		file_put_contents($paths['debug'], @file_get_contents($paths['debug'])."\n".'manifest: '.$manifest);
+  	}
+  	
 		//Create signature
 		if($this->createSignature($manifest) == false) {
 			$this->clean();
 			return false;
 		}
-		
 		if($this->createZip($manifest) == false) {
 			$this->clean();
 			return false;
@@ -235,6 +248,9 @@ class PKPass {
 		}
 		
 		$error = $this->sError;
+		if($this->debugMode) {
+		  file_put_contents($paths['debug'], @file_get_contents($paths['debug']).$error);
+		}
 		return true;
 	}
 	
@@ -312,6 +328,9 @@ class PKPass {
 		if(openssl_pkcs12_read($pkcs12, $certs, $this->certPass) == true) {
 			$certdata = openssl_x509_read($certs['cert']);
 			$privkey = openssl_pkey_get_private($certs['pkey'], $this->certPass );
+			if($this->debugMode) {
+			  file_put_contents($paths['debug'], @file_get_contents($paths['debug'])."\n".'certdata: '.$certdata."\n".'privkey: '.$privkey."\n".'certs: '.print_r($certs, 1));
+			}
 
 			if(!empty($this->WWDRcertPath)){
 
@@ -326,7 +345,13 @@ class PKPass {
 			}
 			
 			$signature = file_get_contents($paths['signature']);
+			if($this->debugMode) {
+			  file_put_contents($paths['debug'], @file_get_contents($paths['debug'])."\n".'signature: '.$signature);
+			}
 			$signature = $this->convertPEMtoDER($signature);
+			if($this->debugMode) {
+			  file_put_contents($paths['debug'], @file_get_contents($paths['debug'])."\n".'signature DER: '.$signature);
+			}
 			file_put_contents($paths['signature'], $signature);
 			
 			return true;
@@ -368,9 +393,10 @@ class PKPass {
 	protected function paths() {
 		//Declare base paths
 		$paths = array(
-						'pkpass' 	=> 'pass.pkpass',
-						'signature' => 'signature',
-						'manifest' 	=> 'manifest.json'
+  					'pkpass'     => 'pass.pkpass',
+						'signature'  => 'signature',
+						'manifest'   => 'manifest.json',
+						'debug'      => 'debug.txt'
 					  );
 		
 		//If trailing slash is missing, add it
@@ -399,19 +425,20 @@ class PKPass {
 	 * Removes all temporary files
 	 */
 	protected function clean() {
-		$paths = $this->paths();
-	
-		foreach($paths AS $path) {
-			if(file_exists($path)) {
-				unlink($path);
-			}
-		}
+  	if(!$this->debugMode) {
+    	$paths = $this->paths();
+		  foreach($paths AS $path) {
+		  	if(file_exists($path)) {
+		  		unlink($path);
+		  	}
+		  }
 
-		//Remove our unique temporary folder
-		if (is_dir($this->tempPath.$this->uniqid)) {
-			rmdir($this->tempPath.$this->uniqid);
-		}
-
+		  //Remove our unique temporary folder
+		  if (is_dir($this->tempPath.$this->uniqid)) {
+		  	rmdir($this->tempPath.$this->uniqid);
+		  }
+  	}
+		
 		return true;
 	}
 }
