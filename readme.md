@@ -8,6 +8,11 @@ Please also take a look at [my repository PHP-Passkit](https://github.com/tschof
 * PHP [ZIP Support](http://php.net/manual/en/book.zip.php) (May be installed by default)
 * Access to filesystem (Script must be able to create temporary folders)
 
+##Info material
+* [Passbook Programming Guide](https://developer.apple.com/library/prerelease/ios/#documentation/UserExperience/Conceptual/PassKit_PG/)
+* [Downloads from developer.apple.com](https://developer.apple.com/downloads/index.action?name=Passbook)
+* [developer.apple.com Provisioning Portal](https://developer.apple.com/ios/manage/passtypeids/ios/manage)
+
 ## Usage
 Please take a look at the example.php file for example usage. For more info on the JSON for the pass and how to style it, take a look at the [docs at developers.apple.com](https://developer.apple.com/library/prerelease/ios/documentation/UserExperience/Reference/PassKit_Bundle/Chapters/Introduction.html).
 
